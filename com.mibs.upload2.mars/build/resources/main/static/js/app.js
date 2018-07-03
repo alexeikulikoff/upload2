@@ -5,10 +5,14 @@ $(document).ready(function() {
 	$("#btnUpload").click(function() {
 
 		console.log("opload clicked");
+		var atachments = {
+				name : "file1.txt",
+				content : "abcdefgh"
+		}
 		var data = {
 			fname : "Jhon",
 			lname : "Smith",
-			attachements : ["apple", "banano"]
+			attachements : [{ name : "file1.txt", content: "abcdef" } , { name : "file2.txt", content: "ghxyz" }]
 		};
 		$.ajax({
 			type : "POST",

@@ -7,13 +7,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mibs.upload2.mars.utils.DataContainer;
+import com.mibs.upload2.mars.utils.CabinetTransfer;
+
 
 @RestController
 public class UploadController {
 
 	 @RequestMapping("/testUpload")
-	 public @ResponseBody String testUpload( @RequestBody DataContainer dc) {
+	 public @ResponseBody String testUpload( @RequestBody CabinetTransfer dc) {
 		    System.out.println( dc );
 	        return "test OK";
 	  }

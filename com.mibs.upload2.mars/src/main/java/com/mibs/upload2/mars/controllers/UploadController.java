@@ -33,18 +33,7 @@ import com.mibs.upload2.mars.utils.CabinetTransfer;
 @RestController
 public class UploadController extends AbstractController{
 
-	 @RequestMapping("/testUpload")
-	 public @ResponseBody Responce testUpload( @RequestBody CabinetTransfer dc) {
-		    System.out.println( dc );
-		    Responce responce = new Responce();
-		    responce.setType("ERROR1111");
-		    responce.setMessage("FUCKED111111111111");
-	        return responce;
-	  }
-	 @RequestMapping("/uploader")
-	 public  String index( Model model ) {
-	        return "uploader";
-	  }
+	
 	 @RequestMapping("/cabinetExamine")
 	 public  String cabinetExamine( @RequestBody CabinetExamine cabinet ) {
 		 System.out.println( cabinet );

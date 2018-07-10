@@ -1,33 +1,25 @@
 package com.mibs.upload2.mars.controllers;
 
 import static com.mibs.upload2.mars.utils.MUtils.regDate;
-import static com.mibs.upload2.mars.utils.MUtils.prologDate;
+
+import java.util.List;
+
+import static com.mibs.upload2.mars.utils.MUtils.prolongDate;
 import static com.mibs.upload2.mars.utils.MUtils.Password;
-
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.Charset;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-
+import static com.mibs.upload2.mars.utils.MUtils.UniqueID;
 import org.apache.tomcat.util.codec.binary.Base64;
-import org.postgresql.util.PSQLException;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.mibs.upload2.mars.dao.CabinetBuild;
 import com.mibs.upload2.mars.dao.CabinetExamine;
+import com.mibs.upload2.mars.dao.CabinetProlong;
 import com.mibs.upload2.mars.dao.Conclusion;
-import com.mibs.upload2.mars.dao.Responce;
 import com.mibs.upload2.mars.entity.Exploration;
-import com.mibs.upload2.mars.entity.Journal;
+import com.mibs.upload2.mars.entity.Payments;
 import com.mibs.upload2.mars.entity.Users;
-import com.mibs.upload2.mars.utils.CabinetTransfer;
+
 
 
 @RestController
@@ -36,11 +28,41 @@ public class UploadController extends AbstractController{
 	
 	 @RequestMapping("/cabinetExamine")
 	 public  String cabinetExamine( @RequestBody CabinetExamine cabinet ) {
-		 System.out.println( cabinet );
 		 Users user = usersRepository.findByEmail( cabinet.getEmail() );
-		 System.out.println( user );
 		 if (user == null )  return "ERROR_CABINET_EXAMINE_USER_EXIST:" + cabinet.getEmailDecodeBase64();
 	     return "CABINET_EXAMINE_USER_EXIST:" + cabinet.getEmailDecodeBase64();
+	  }
+	 @RequestMapping("/cabinetProlong")
+	 public String cabinetProlong( @RequestBody CabinetProlong cabinet ) {
+		 Users user = usersRepository.findByEmail( cabinet.getEmail() );
+		 if (user == null )  return "ERROR_CABINET_EXAMINE_USER_EXIST:" + cabinet.getEmailDecodeBase64();
+		 
+		 List<Payments> pms = paymentsRepository.findByUserid( user.getId() );
+		
+		 Long lastRegdate =  (pms.size() > 0) ? pms.get(pms.size() -1 ).getPaidtill() : regDate();
+		
+		 if (regDate() < lastRegdate)  return "ERROR_CABINET_ALREADY_PROLONGED:" + cabinet.getEmailDecodeBase64()
+		 											+ " " +  Base64.encodeBase64String(user.getSurname().getBytes()) +
+		 											"  " + Base64.encodeBase64String(user.getFirstname().getBytes()) + " " + Base64.encodeBase64String( user.getLastname().getBytes()); 
+
+		 
+		 Payments payment = new Payments();
+		 payment.setUserid(user.getId());
+		 payment.setPaiddate(regDate());
+		 payment.setPaidsum(new Float(500));
+		 payment.setPaidtill( prolongDate( cabinet.getProlongationtime()));
+		 try {
+			 Payments pm = paymentsRepository.save ( payment );
+			 System.out.println( pm );
+			 return "CABINET_IS_PROLONGED:" + cabinet.getEmailDecodeBase64() + " " +  Base64.encodeBase64String(user.getSurname().getBytes()) +
+					 "  " + Base64.encodeBase64String(user.getFirstname().getBytes()) + " " + Base64.encodeBase64String( user.getLastname().getBytes()); 
+		 }catch(Exception e) {
+			e.printStackTrace();
+			 return "ERROR_CABINET_PROLONGATION: " + cabinet.getEmailDecodeBase64() + " " +  Base64.encodeBase64String(user.getSurname().getBytes()) +
+					 "  " + Base64.encodeBase64String(user.getFirstname().getBytes()) + " " + Base64.encodeBase64String( user.getLastname().getBytes()); 
+ 
+		 }
+	     
 	  }
 	 @RequestMapping("/cabinetBuild")
 	 public String cabinetBuild( @RequestBody CabinetBuild cabinet ) {
@@ -64,6 +86,8 @@ public class UploadController extends AbstractController{
 			 exploration.setExplname(cabinet.getStudyname());
 			 exploration.setUniqueid(cabinet.getUid());
 			 exploration.setUsersId(savedUser.getId());
+			 exploration.setRemotepath( cabinet.getPath() );
+			 exploration.setDicomname(  UniqueID() );
 			 try {
 				 Exploration savedExploration = explorationRepository.save(exploration);
 				 for(Conclusion concl : cabinet.getConclusions()) {

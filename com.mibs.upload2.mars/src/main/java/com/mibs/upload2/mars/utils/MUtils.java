@@ -101,14 +101,9 @@ public class MUtils {
 		return ZonedDateTime.of(LocalDateTime.now(), ZoneId.systemDefault()).toEpochSecond();
 
 	}
-	public static Long prologDate(String prolong) {
-		int years = 0;
-		switch( prolong ) {
-			case "PROLONG_ONE_YEAR": years = 1; break;
-			case "PROLONG_THREE_YEAR": years = 3; break;
-			
-		}
-		LocalDateTime prolongDateTime = LocalDateTime.now().plusYears(years);
+	public static Long prolongDate(String prolong) {
+	
+		LocalDateTime prolongDateTime = LocalDateTime.now().plusYears( Integer.parseInt(prolong) );
 		return ZonedDateTime.of(prolongDateTime, ZoneId.systemDefault()).toEpochSecond();
 		
 	}

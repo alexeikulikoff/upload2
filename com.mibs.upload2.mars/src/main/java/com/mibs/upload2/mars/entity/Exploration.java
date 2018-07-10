@@ -45,6 +45,8 @@ public class Exploration  implements Serializable{
 	private long dicomSize;
 	@Column(name = "dicom_name")
 	private String dicomname;
+	@Column(name = "remotepath")
+	private String remotepath;
 	public Long getId() {
 		return this.id;
 	}
@@ -93,6 +95,12 @@ public class Exploration  implements Serializable{
 	}
 	public void setDicomname(String s) {
 		dicomname = s;
+	}
+	public String getRemotepath() {
+		return remotepath;
+	}
+	public void setRemotepath(String s) {
+		remotepath = s;
 	}
 	@Override
 	public boolean equals(Object obj) {

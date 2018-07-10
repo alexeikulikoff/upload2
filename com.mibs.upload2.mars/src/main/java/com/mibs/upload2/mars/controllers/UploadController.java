@@ -9,6 +9,7 @@ import static com.mibs.upload2.mars.utils.MUtils.Password;
 import static com.mibs.upload2.mars.utils.MUtils.UniqueID;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,7 +26,11 @@ import com.mibs.upload2.mars.entity.Users;
 @RestController
 public class UploadController extends AbstractController{
 
-	
+	 @RequestMapping("/test")
+	 public  String testUpload( Model model ) {
+		return "test passed";
+	 }
+	 
 	 @RequestMapping("/cabinetExamine")
 	 public  String cabinetExamine( @RequestBody CabinetExamine cabinet ) {
 		 Users user = usersRepository.findByEmail( cabinet.getEmail() );
@@ -53,11 +58,11 @@ public class UploadController extends AbstractController{
 		 payment.setPaidtill( prolongDate( cabinet.getProlongationtime()));
 		 try {
 			 Payments pm = paymentsRepository.save ( payment );
-			 System.out.println( pm );
+			
 			 return "CABINET_IS_PROLONGED:" + cabinet.getEmailDecodeBase64() + " " +  Base64.encodeBase64String(user.getSurname().getBytes()) +
 					 "  " + Base64.encodeBase64String(user.getFirstname().getBytes()) + " " + Base64.encodeBase64String( user.getLastname().getBytes()); 
 		 }catch(Exception e) {
-			e.printStackTrace();
+			
 			 return "ERROR_CABINET_PROLONGATION: " + cabinet.getEmailDecodeBase64() + " " +  Base64.encodeBase64String(user.getSurname().getBytes()) +
 					 "  " + Base64.encodeBase64String(user.getFirstname().getBytes()) + " " + Base64.encodeBase64String( user.getLastname().getBytes()); 
  

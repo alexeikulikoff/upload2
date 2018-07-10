@@ -57,7 +57,7 @@ import com.mibs.upload2.mars.repos.RemotePathsRepository;
 import com.mibs.upload2.mars.repos.RequestRepository;
 import com.mibs.upload2.mars.repos.UsersRepository;
 import com.mibs.upload2.mars.service.ExplorationUniqueName;
-import com.mibs.upload2.mars.utils.Dcm2Img;
+
 import com.mibs.upload2.mars.utils.MailAgent;
 
 import jcifs.smb.SmbException;

@@ -117,7 +117,7 @@ dependencies {
 	
 //	 /home/admin3/workspace/dcm4che/dcm4che-assembly/target
 	 //compile fileTree(dir: '/home/admin3/workspace/dcm4che/dcm4che-assembly/target/dcm4che-5.13.0-bin/dcm4che-5.13.0/lib', include: '*.jar')
-	 compile fileTree(dir: '/home/admin2/dcm4che/dcm4che-assembly/target/dcm4che-5.13.0-bin/dcm4che-5.13.0/lib', include: '*.jar')
+//	 compile fileTree(dir: '/home/admin2/dcm4che/dcm4che-assembly/target/dcm4che-5.13.0-bin/dcm4che-5.13.0/lib', include: '*.jar')
 			
 	 // https://mvnrepository.com/artifact/net.lingala.zip4j/zip4j
 	compile group: 'net.lingala.zip4j', name: 'zip4j', version: '1.3.2'

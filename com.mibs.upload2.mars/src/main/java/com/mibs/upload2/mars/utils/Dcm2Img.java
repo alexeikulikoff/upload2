@@ -36,7 +36,7 @@ import com.mibs.upload2.mars.repos.ImagesRepository;
 
 
 public class Dcm2Img {
-	 static Logger logger = LoggerFactory.getLogger(Dcm2Img.class);
+/*	 static Logger logger = LoggerFactory.getLogger(Dcm2Img.class);
 	 private int frame = 1;
 	 private String suffix;
 	 private ImageWriter imageWriter;
@@ -148,7 +148,7 @@ public class Dcm2Img {
 		ImageIO.write(scaledImage, "jpg", new File(dest));
 		
 	}
-*/	
+	
 	public void CCCatch(String dicomFolderName, String serPath,  Exploration exploration, ImagesRepository imagesRepository) throws ErrorDicomParsingException {
 		byte[] data = null;
 		List<ImageEntity> imgs = imagesRepository.findByExplorationid( exploration.getId());
@@ -226,5 +226,5 @@ public class Dcm2Img {
 			}
 		}
 	}
-	
+*/	
 }

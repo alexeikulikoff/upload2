@@ -159,7 +159,7 @@ abstract class AbstractController {
 		}
 		return addUser( cabinet );
     }
-	protected void createNewProfile( CabinetBuild cabinet )  {
+/*	protected void createNewProfile( CabinetBuild cabinet )  {
 		
 		String subject =  messageSource.getMessage("mail.template.subject", null, locale);
 		explorationUniqueName = new ExplorationUniqueName();
@@ -212,7 +212,7 @@ abstract class AbstractController {
 			logger.error("Error while copying remote DICOM to local directory with message: "  +  e1.getMessage());
 		}
 	}
-	
+*/	
 	protected void addConclusions(CabinetBuild cabinet, Exploration exploration) throws AddNewConclusionException {
 		
 		List<Conclusion> Cons =  conclusionRepository.findByExplorationid( exploration.getId());
@@ -311,27 +311,6 @@ abstract class AbstractController {
 		return resultPath;
 	}
 	
-	protected void continueProfile(Request request, String v) {
-		
-		try{
-			Long paidtill = regDate() ;
-			Float paidsum = Float.parseFloat(request.getCount());
-			String email = request.getEmail();
-			if (v.equals("3")) paidtill += AYEAR;
-			if (v.equals("4")) paidtill += 3 * AYEAR;
-			
-			Users user = usersRepository.findByEmail(email);
-			Payments payments = new Payments();
-			payments.setUserid(user.getId());
-			payments.setPaiddate(paidtill);
-			payments.setPaidtill( paidtill );
-			payments.setPaidsum( paidsum );
-			paymentsRepository.save(payments);
-			
-		}catch(Exception e) {
-			logger.error("Error while payment continuing has occurs with message: " + e.getMessage());
-		}
-		
-	}
+
 	
 }

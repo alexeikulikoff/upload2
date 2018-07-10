@@ -44,7 +44,7 @@ security:
 server:  
     connection-timeout: -1 
     context-path: /upload
-    address: 172.16.255.8         
+    address: 172.16.255.6         
     port: 8181
  
     

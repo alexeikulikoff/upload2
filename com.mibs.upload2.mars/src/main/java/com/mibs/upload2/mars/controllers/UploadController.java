@@ -3,6 +3,9 @@ package com.mibs.upload2.mars.controllers;
 import static com.mibs.upload2.mars.utils.MUtils.regDate;
 
 import java.util.List;
+import java.util.Locale;
+
+import javax.mail.MessagingException;
 
 import static com.mibs.upload2.mars.utils.MUtils.prolongDate;
 import static com.mibs.upload2.mars.utils.MUtils.Password;
@@ -13,6 +16,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+
 import com.mibs.upload2.mars.dao.CabinetBuild;
 import com.mibs.upload2.mars.dao.CabinetExamine;
 import com.mibs.upload2.mars.dao.CabinetProlong;
@@ -26,6 +31,8 @@ import com.mibs.upload2.mars.entity.Users;
 @RestController
 public class UploadController extends AbstractController{
 
+	private Locale locale = Locale.getDefault();
+	
 	 @RequestMapping("/test")
 	 public  String testUpload( Model model ) {
 		return "test passed";
@@ -35,7 +42,19 @@ public class UploadController extends AbstractController{
 	 public  String cabinetExamine( @RequestBody CabinetExamine cabinet ) {
 		 Users user = usersRepository.findByEmail( cabinet.getEmail() );
 		 if (user == null )  return "ERROR_CABINET_EXAMINE_USER_EXIST:" + cabinet.getEmailDecodeBase64();
-	     return "CABINET_EXAMINE_USER_EXIST:" + cabinet.getEmailDecodeBase64();
+		 
+		 List<Payments> pms = paymentsRepository.findByUserid( user.getId() );
+		
+		 if (pms != null) {
+			 
+		     return "CABINET_EXAMINE_USER_EXIST:" + cabinet.getEmailDecodeBase64() + 
+		    			    ":" + Base64.encodeBase64String(user.getSurname().getBytes()) +
+							":" + Base64.encodeBase64String(user.getFirstname().getBytes()) + 
+							":" + Base64.encodeBase64String( user.getLastname().getBytes()) +
+							":" + Base64.encodeBase64String(pms.get(pms.size() -1 ).getPaidtillDate().getBytes()); 
+		 }
+		 return "ERROR_CABINET_EXAMINE_USER_EXIST:" + cabinet.getEmailDecodeBase64();
+					
 	  }
 	 @RequestMapping("/cabinetProlong")
 	 public String cabinetProlong( @RequestBody CabinetProlong cabinet ) {
@@ -47,8 +66,11 @@ public class UploadController extends AbstractController{
 		 Long lastRegdate =  (pms.size() > 0) ? pms.get(pms.size() -1 ).getPaidtill() : regDate();
 		
 		 if (regDate() < lastRegdate)  return "ERROR_CABINET_ALREADY_PROLONGED:" + cabinet.getEmailDecodeBase64()
-		 											+ " " +  Base64.encodeBase64String(user.getSurname().getBytes()) +
-		 											"  " + Base64.encodeBase64String(user.getFirstname().getBytes()) + " " + Base64.encodeBase64String( user.getLastname().getBytes()); 
+		 											+ ":" + Base64.encodeBase64String(user.getSurname().getBytes()) +
+		 											":" + Base64.encodeBase64String(user.getFirstname().getBytes()) + 
+		 											":" + Base64.encodeBase64String( user.getLastname().getBytes()) +
+		 											":" + Base64.encodeBase64String(pms.get(pms.size() -1 ).getPaidtillDate().getBytes()); 
+		 											; 
 
 		 
 		 Payments payment = new Payments();
@@ -59,12 +81,15 @@ public class UploadController extends AbstractController{
 		 try {
 			 Payments pm = paymentsRepository.save ( payment );
 			
-			 return "CABINET_IS_PROLONGED:" + cabinet.getEmailDecodeBase64() + " " +  Base64.encodeBase64String(user.getSurname().getBytes()) +
-					 "  " + Base64.encodeBase64String(user.getFirstname().getBytes()) + " " + Base64.encodeBase64String( user.getLastname().getBytes()); 
+			 return "CABINET_IS_PROLONGED:" + cabinet.getEmailDecodeBase64() + 
+					 ":" +  Base64.encodeBase64String(user.getSurname().getBytes()) +
+					 ":" + Base64.encodeBase64String(user.getFirstname().getBytes()) + 
+					 ":" + Base64.encodeBase64String( user.getLastname().getBytes()) + 
+					 ":" + Base64.encodeBase64String(pm.getPaidtillDate().getBytes());
+			 
 		 }catch(Exception e) {
 			
-			 return "ERROR_CABINET_PROLONGATION: " + cabinet.getEmailDecodeBase64() + " " +  Base64.encodeBase64String(user.getSurname().getBytes()) +
-					 "  " + Base64.encodeBase64String(user.getFirstname().getBytes()) + " " + Base64.encodeBase64String( user.getLastname().getBytes()); 
+			 return "ERROR_CABINET_PROLONGATION:" + cabinet.getEmailDecodeBase64(); 
  
 		 }
 	     
@@ -102,6 +127,27 @@ public class UploadController extends AbstractController{
 					 conclusion.setConclusionfile(Base64.decodeBase64(concl.getContent()));
 					 try {
 						 conclusionRepository.save(conclusion); 
+						 String text = messageSource.getMessage("mail.template.textM", null, locale) + "  " +  user.getFirstname() + "  " + user.getLastname()  + "!";
+						 String[] params = { user.getFirstname(), user.getEmail(), user.getPasswd() };
+						 String template = messageSource.getMessage("mail.template.invite", params, locale);
+						 String subject =  messageSource.getMessage("mail.template.subject", null, locale);
+						 Payments payment = new Payments();
+						 payment.setUserid(user.getId());
+						 payment.setPaiddate(regDate());
+						 payment.setPaidsum(new Float(500));
+						 payment.setPaidtill( prolongDate( cabinet.getProlongationtime()));
+						 try {
+							 Payments pm = paymentsRepository.save ( payment );
+							 try {
+									//MailAgent.sendMail(appConfig.getMailFrom(), user.getEmail(), appConfig.getMaiSmtpHost(),  subject, text, template);
+									 MailAgent.sendMail(appConfig.getMailFrom(), "kulikov@ldc.ru", appConfig.getMaiSmtpHost(),  subject, text, template);
+								 } catch (MessagingException e) {
+									e.printStackTrace();
+									logger.error("Email to :" + user.getEmail() +" has not been sent!" );
+								}
+						 }catch(Exception e) {
+							 return "ERROR_CABINET_PROLONGATION:" + cabinet.getEmailDecodeBase64();  
+						 }
 					 }catch(Exception e1) {
 						 return "ERROR_SAVING_CONCLUSION:" + concl.getName() ; 
 					 }
@@ -114,7 +160,11 @@ public class UploadController extends AbstractController{
 		 }catch(Exception e ) {
 			 return "ERROR_UNKNOWN:" + cabinet.getUidDecodeBase64() ; 
 		 }
-		 String res = cabinet.getEmailDecodeBase64() + " " + cabinet.getFamilyDecodeBase64() + " " + cabinet.getFirstDecodeBase64() + " " + cabinet.getParentDecodeBase64() ;
-		 return "CABINET_BUILD_IN_PROGRESS:" + res ;
+		 
+		 return "CABINET_BUILD_IN_PROGRESS:" + cabinet.getEmailDecodeBase64() + 
+		 									":" + Base64.encodeBase64String(user.getSurname().getBytes()) +
+											":" + Base64.encodeBase64String(user.getFirstname().getBytes()) + 
+											":" + Base64.encodeBase64String( user.getLastname().getBytes()) ;
+	 
 	  }
 }

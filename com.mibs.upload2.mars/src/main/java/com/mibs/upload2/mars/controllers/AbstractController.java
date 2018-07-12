@@ -75,7 +75,7 @@ abstract class AbstractController {
 	@Autowired 
 	protected UsersRepository usersRepository;
 	@Autowired
-	private AppConfig appConfig;
+	protected AppConfig appConfig;
 	@Autowired
 	private ImagesRepository imagesRepository;
 	@Autowired

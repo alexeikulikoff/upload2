@@ -56,20 +56,21 @@ public class Payments implements Serializable {
 //	}
 	public Long getPaidtill() {
 		return  paidtill;
-
 	}
+	public String getPaidtillDate() {
+		return  UnixTimeToStringDateOnly(paidtill);
+	}
+
 	public void setPaidtill(Long e) {
 		
 		this.paidtill = e;
 	}
+	
 	public Long getPaiddate() {
 		return paiddate;
 	
 	}
-//	public String getPaiddate() {
-//		return UnixTimeToStringDateOnly( paiddate );
-	
-//	}
+
 	public void setPaiddate(Long e) {
 		this.paiddate = e;
 	}

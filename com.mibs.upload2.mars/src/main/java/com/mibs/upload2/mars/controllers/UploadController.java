@@ -38,6 +38,20 @@ public class UploadController extends AbstractController{
 		return "test passed";
 	 }
 	 
+	 @RequestMapping("/mailtest")
+	 public  String mailtest( Model model ) {
+		 String emailto = "kulikov@ldc.ru";
+		 try {
+				//MailAgent.sendMail(appConfig.getMailFrom(), user.getEmail(), appConfig.getMaiSmtpHost(),  subject, text, template);
+				 MailAgent.sendMail(appConfig.getMailFrom(), "kulikov@ldc.ru", appConfig.getMaiSmtpHost(),  "hello from ppc", "text", "template");
+			 } catch (MessagingException e) {
+				e.printStackTrace();
+				logger.error("Email to :" + emailto +" has not been sent!" );
+		}
+		 
+		return "email to " + emailto + ", SmtpHost: " + appConfig.getMaiSmtpHost()  + " from " + appConfig.getMailFrom();
+	 }
+	 
 	 @RequestMapping("/cabinetExamine")
 	 public  String cabinetExamine( @RequestBody CabinetExamine cabinet ) {
 		 Users user = usersRepository.findByEmail( cabinet.getEmail() );

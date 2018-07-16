@@ -35,7 +35,7 @@ public class UploadController extends AbstractController{
 	
 	 @RequestMapping("/test")
 	 public  String testUpload( Model model ) {
-		return "test passed";
+		return "test OK";
 	 }
 	 
 	 @RequestMapping("/mailtest")

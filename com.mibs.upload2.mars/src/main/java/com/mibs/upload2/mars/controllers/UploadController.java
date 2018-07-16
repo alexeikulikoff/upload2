@@ -153,8 +153,8 @@ public class UploadController extends AbstractController{
 						 try {
 							 Payments pm = paymentsRepository.save ( payment );
 							 try {
-									//MailAgent.sendMail(appConfig.getMailFrom(), user.getEmail(), appConfig.getMaiSmtpHost(),  subject, text, template);
-									 MailAgent.sendMail(appConfig.getMailFrom(), "kulikov@ldc.ru", appConfig.getMaiSmtpHost(),  subject, text, template);
+									MailAgent.sendMail(appConfig.getMailFrom(), user.getEmail(), appConfig.getMaiSmtpHost(),  subject, text, template);
+									 //MailAgent.sendMail(appConfig.getMailFrom(), "kulikov@ldc.ru", appConfig.getMaiSmtpHost(),  subject, text, template);
 								 } catch (MessagingException e) {
 									e.printStackTrace();
 									logger.error("Email to :" + user.getEmail() +" has not been sent!" );

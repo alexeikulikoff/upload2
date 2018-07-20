@@ -1,11 +1,12 @@
 package com.mibs.upload2.mars.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-public class CabinetBuild extends CabinetExamine {
+public class CabinetBuild extends CabinetProlong {
 	private String first;
 	private String parent;
 	private String family;
@@ -13,7 +14,7 @@ public class CabinetBuild extends CabinetExamine {
 	private String uid;
 	private String studyname;
 	private String path;
-	private String prolongationtime;
+
 	private List<Conclusion> conclusions;
 
 	public List<Conclusion> getConclusions(){
@@ -23,12 +24,6 @@ public class CabinetBuild extends CabinetExamine {
 		this.conclusions  = conclusions;
 	}
 	
-	public String getProlongationtime() {
-		return prolongationtime;
-	}
-	public void setProlongationtime(String s) {
-		prolongationtime = s;
-	}
 	
 	public String getFirstDecodeBase64() {
 		return first;

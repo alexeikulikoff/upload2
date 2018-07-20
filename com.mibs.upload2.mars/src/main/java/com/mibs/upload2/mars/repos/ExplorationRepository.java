@@ -13,6 +13,7 @@ public interface ExplorationRepository  extends CrudRepository<Exploration, Long
 	List<Exploration> findAll();
 	List<Exploration> findByUsersId(Long id);
 	Exploration findById(Long id);
+	Exploration findByUniqueid(String uid);
 	
 
 }

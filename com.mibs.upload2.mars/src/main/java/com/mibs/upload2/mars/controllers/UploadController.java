@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
+import com.mibs.upload2.mars.dao.CabinetAddExploration;
 import com.mibs.upload2.mars.dao.CabinetBuild;
 import com.mibs.upload2.mars.dao.CabinetExamine;
 import com.mibs.upload2.mars.dao.CabinetProlong;
@@ -108,72 +108,98 @@ public class UploadController extends AbstractController{
 		 }
 	     
 	  }
+	 
+	 
+	 @RequestMapping("/cabinetAddExploration")
+	 public String cabinetAddExploration( @RequestBody CabinetAddExploration cabinet ) {
+		 
+		 Exploration exp  = explorationRepository.findByUniqueid(cabinet.getUid());
+		
+		 if (exp != null) return "ERROR_ADD_NEW_EXPLORATION:" + cabinet.getUidDecodeBase64(); 
+		 
+		 Users user = usersRepository.findByEmail(cabinet.getEmail());
+		 
+		 if (user == null) return  "ERROR_CABINET_EXAMINE_USER_EXIST:" + cabinet.getEmailDecodeBase64();
+		 
+		 
+		 Exploration exploration = new Exploration();
+		 exploration.setDate(regDate());
+		 exploration.setExplname(cabinet.getExploration());
+		 exploration.setUniqueid(cabinet.getUid());
+		 exploration.setUsersId(user.getId());
+		 exploration.setRemotepath( cabinet.getPath() );
+		 exploration.setDicomname(  UniqueID() );
+		 try {
+			 explorationRepository.save(exploration); 
+			 return "EXPLORATION_SAVED:" + cabinet.getUidDecodeBase64(); 
+		 }  catch (Exception e) {
+			 return "ERROR_ADD_NEW_EXPLORATION:" + cabinet.getUidDecodeBase64(); 
+		 }
+	 }
+	 
+	 
 	 @RequestMapping("/cabinetBuild")
 	 public String cabinetBuild( @RequestBody CabinetBuild cabinet ) {
 		 Users user = usersRepository.findByEmail(cabinet.getEmail());
-		 if (user == null) {
-			 user = new Users();
-			 user.setFirstname(cabinet.getFirst());
-			 user.setLastname( cabinet.getParent());
-			 user.setSurname( cabinet.getFamily());
-			 user.setEmail( cabinet.getEmail() );
-			 user.setLogin( cabinet.getEmail());
-			 user.setPasswd( Password() );
-			 user.setIsEmailChecked(0);
-			 user.setRegdate(regDate());
-			 user.setRoles("PATIENT"); 
-		 }
+		 if (user != null) {
+			 List<Payments> pms = paymentsRepository.findByUserid( user.getId() );
+			 if ((pms != null) && (pms.size() > 0)) { 
+			 
+				 return "CABINET_EXAMINE_USER_EXIST:" + cabinet.getEmailDecodeBase64() + 
+				 		":" + Base64.encodeBase64String(user.getSurname().getBytes()) +
+					":" + Base64.encodeBase64String(user.getFirstname().getBytes()) + 
+					":" + Base64.encodeBase64String( user.getLastname().getBytes()) +
+					":" + Base64.encodeBase64String(pms.get(pms.size() -1 ).getPaidtillDate().getBytes()); 
+		 	}else {
+		 		return "ERROR_UNKNOWN:" + cabinet.getEmailDecodeBase64()  ; 
+		 	}
+		 }	 
+		user = new Users();
+		user.setFirstname(cabinet.getFirst());
+		user.setLastname( cabinet.getParent());
+		user.setSurname( cabinet.getFamily());
+		user.setEmail( cabinet.getEmail() );
+		user.setLogin( cabinet.getEmail());
+		user.setPasswd( Password() );
+		user.setIsEmailChecked(0);
+		user.setRegdate(regDate());
+		user.setRoles("PATIENT"); 
+			
+		Users savedUser = usersRepository.save( user ); 
+		Payments payment = new Payments();
+		payment.setUserid(user.getId());
+		payment.setPaiddate(regDate());
+		payment.setPaidsum(new Float(500));
+		payment.setPaidtill( prolongDate( cabinet.getProlongationtime()));
+		paymentsRepository.save ( payment );	 
+			 
+		 Exploration exploration = new Exploration();
+		 exploration.setDate(regDate());
+		 exploration.setExplname(cabinet.getStudyname());
+		 exploration.setUniqueid(cabinet.getUid());
+		 exploration.setUsersId(savedUser.getId());
+		 exploration.setRemotepath( cabinet.getPath() );
+		 exploration.setDicomname(  UniqueID() );
 		 try {
-			 Users savedUser = usersRepository.save( user ); 
-			 Exploration exploration = new Exploration();
-			 exploration.setDate(regDate());
-			 exploration.setExplname(cabinet.getStudyname());
-			 exploration.setUniqueid(cabinet.getUid());
-			 exploration.setUsersId(savedUser.getId());
-			 exploration.setRemotepath( cabinet.getPath() );
-			 exploration.setDicomname(  UniqueID() );
+			 explorationRepository.save(exploration);
 			 try {
-				 Exploration savedExploration = explorationRepository.save(exploration);
-				 for(Conclusion concl : cabinet.getConclusions()) {
-					 com.mibs.upload2.mars.entity.Conclusion conclusion = new com.mibs.upload2.mars.entity.Conclusion();
-					 conclusion.setExplorationid( savedExploration.getId() );
-					 conclusion.setFilename(concl.getName());
-					 conclusion.setConclusionfile(Base64.decodeBase64(concl.getContent()));
-					 try {
-						 conclusionRepository.save(conclusion); 
-						 String text = messageSource.getMessage("mail.template.textM", null, locale) + "  " +  user.getFirstname() + "  " + user.getLastname()  + "!";
-						 String[] params = { user.getFirstname(), user.getEmail(), user.getPasswd() };
-						 String template = messageSource.getMessage("mail.template.invite", params, locale);
-						 String subject =  messageSource.getMessage("mail.template.subject", null, locale);
-						 Payments payment = new Payments();
-						 payment.setUserid(user.getId());
-						 payment.setPaiddate(regDate());
-						 payment.setPaidsum(new Float(500));
-						 payment.setPaidtill( prolongDate( cabinet.getProlongationtime()));
-						 try {
-							 Payments pm = paymentsRepository.save ( payment );
-							 try {
-									MailAgent.sendMail(appConfig.getMailFrom(), user.getEmail(), appConfig.getMaiSmtpHost(),  subject, text, template);
-									 //MailAgent.sendMail(appConfig.getMailFrom(), "kulikov@ldc.ru", appConfig.getMaiSmtpHost(),  subject, text, template);
-								 } catch (MessagingException e) {
-									e.printStackTrace();
-									logger.error("Email to :" + user.getEmail() +" has not been sent!" );
-								}
-						 }catch(Exception e) {
-							 return "ERROR_CABINET_PROLONGATION:" + cabinet.getEmailDecodeBase64();  
-						 }
-					 }catch(Exception e1) {
-						 return "ERROR_SAVING_CONCLUSION:" + concl.getName() ; 
-					 }
-				 }
-			 }catch(DataIntegrityViolationException e) {
-				 return "ERROR_ADD_NEW_EXPLORATION:" + cabinet.getUidDecodeBase64(); 
-			 }catch(Exception e1) {
-				 return "ERROR_UNKNOWN:" + cabinet.getUidDecodeBase64() ;
-			 }
-		 }catch(Exception e ) {
-			 return "ERROR_UNKNOWN:" + cabinet.getUidDecodeBase64() ; 
-		 }
+				   String text = messageSource.getMessage("mail.template.textM", null, locale) + "  " +  user.getFirstname() + "  " + user.getLastname()  + "!";
+				   String[] params = { user.getFirstname(), user.getEmail(), user.getPasswd() };
+				   String template = messageSource.getMessage("mail.template.invite", params, locale);
+				   String subject =  messageSource.getMessage("mail.template.subject", null, locale);
+					MailAgent.sendMail(appConfig.getMailFrom(), user.getEmail(), appConfig.getMaiSmtpHost(),  subject, text, template);
+					 //MailAgent.sendMail(appConfig.getMailFrom(), "kulikov@ldc.ru", appConfig.getMaiSmtpHost(),  subject, text, template);
+				 } catch (MessagingException e) {
+					//e.printStackTrace();
+					logger.error("Email to :" + user.getEmail() +" has not been sent!" );
+			}
+		
+		 }catch(DataIntegrityViolationException e) {
+			
+			 return "ERROR_ADD_NEW_EXPLORATION:" + cabinet.getUidDecodeBase64(); 
+		 
+		 } 
+	
 		 
 		 return "CABINET_BUILD_IN_PROGRESS:" + cabinet.getEmailDecodeBase64() + 
 		 									":" + Base64.encodeBase64String(user.getSurname().getBytes()) +
@@ -182,3 +208,17 @@ public class UploadController extends AbstractController{
 	 
 	  }
 }
+
+/*			 for(Conclusion concl : cabinet.getConclusions()) {
+com.mibs.upload2.mars.entity.Conclusion conclusion = new com.mibs.upload2.mars.entity.Conclusion();
+conclusion.setExplorationid( savedExploration.getId() );
+conclusion.setFilename(concl.getName());
+conclusion.setConclusionfile(Base64.decodeBase64(concl.getContent()));
+try {
+	 conclusionRepository.save(conclusion); 
+	
+}catch(Exception e1) {
+	 return "ERROR_SAVING_CONCLUSION:" + concl.getName() ; 
+}
+}
+*/				

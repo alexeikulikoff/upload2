@@ -44,9 +44,21 @@ public class UploadController extends AbstractController{
 	 @RequestMapping("/mailtest")
 	 public  String mailtest( Model model ) {
 		 String emailto = "kulikov@ldc.ru";
+		 Users user = usersRepository.findByEmail( emailto );
+		 if (user == null) return "No user found for email: " + emailto ;
 		 try {
 				//MailAgent.sendMail(appConfig.getMailFrom(), user.getEmail(), appConfig.getMaiSmtpHost(),  subject, text, template);
-				 MailAgent.sendMail(appConfig.getMailFrom(), "kulikov@ldc.ru", appConfig.getMaiSmtpHost(),  "hello from ppc", "text", "template");
+			 String[] params = { user.getSurname() + "  " + user.getFirstname() + " " + user.getLastname(), user.getEmail(), user.getPasswd() };
+			 String template_newCabinet = messageSource.getMessage("mail.template.newCabinet", params, locale);
+			 String subject =  messageSource.getMessage("mail.template.subject", null, locale);
+			 MailAgent.sendMail(appConfig.getMailFrom(), emailto, appConfig.getMaiSmtpHost(),  subject, "", template_newCabinet);
+			
+			 String[] admin_params = { user.getSurname() + "  " + user.getFirstname() + " " + user.getLastname(), user.getEmail() };
+			 String template_admin_newCabinet = messageSource.getMessage("mail.template.newCabinet", admin_params, locale);
+			 MailAgent.sendMail(appConfig.getMailFrom(), emailto, appConfig.getMaiSmtpHost(),  subject, "", template_admin_newCabinet);
+	
+			 
+			 MailAgent.sendMail(appConfig.getMailFrom(), "kulikov@ldc.ru", appConfig.getMaiSmtpHost(),  "hello from ppc", "text", "template");
 			 } catch (MessagingException e) {
 				e.printStackTrace();
 				logger.error("Email to :" + emailto +" has not been sent!" );

@@ -47,7 +47,7 @@ public class UploadController extends AbstractController{
 		 Users user = usersRepository.findByEmail( emailto );
 		 if (user == null) return "No user found for email: " + emailto ;
 		 try {
-				//MailAgent.sendMail(appConfig.getMailFrom(), user.getEmail(), appConfig.getMaiSmtpHost(),  subject, text, template);
+				
 			 String[] params = { user.getSurname() + "  " + user.getFirstname() + " " + user.getLastname(), user.getEmail(), user.getPasswd() };
 			 String template_newCabinet = messageSource.getMessage("mail.template.newCabinet", params, locale);
 			 String subject =  messageSource.getMessage("mail.template.subject", null, locale);

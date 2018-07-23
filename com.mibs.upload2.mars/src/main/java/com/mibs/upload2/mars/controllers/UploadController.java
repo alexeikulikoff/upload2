@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+
 import com.mibs.upload2.mars.dao.CabinetAddExploration;
 import com.mibs.upload2.mars.dao.CabinetBuild;
 import com.mibs.upload2.mars.dao.CabinetExamine;
@@ -31,6 +32,8 @@ import com.mibs.upload2.mars.entity.Users;
 @RestController
 public class UploadController extends AbstractController{
 
+	private final String ADMIN_EMAIL = "storage@mcomtech.ru";
+	
 	private Locale locale = Locale.getDefault();
 	
 	 @RequestMapping("/test")
@@ -183,12 +186,16 @@ public class UploadController extends AbstractController{
 		 try {
 			 explorationRepository.save(exploration);
 			 try {
-				   String text = messageSource.getMessage("mail.template.textM", null, locale) + "  " +  user.getFirstname() + "  " + user.getLastname()  + "!";
-				   String[] params = { user.getFirstname(), user.getEmail(), user.getPasswd() };
-				   String template = messageSource.getMessage("mail.template.invite", params, locale);
-				   String subject =  messageSource.getMessage("mail.template.subject", null, locale);
-					MailAgent.sendMail(appConfig.getMailFrom(), user.getEmail(), appConfig.getMaiSmtpHost(),  subject, text, template);
-					 //MailAgent.sendMail(appConfig.getMailFrom(), "kulikov@ldc.ru", appConfig.getMaiSmtpHost(),  subject, text, template);
+				   
+				 String[] params = { user.getSurname() + "  " + user.getFirstname() + " " + user.getLastname(), user.getEmail(), user.getPasswd() };
+				 String template_newCabinet = messageSource.getMessage("mail.template.newCabinet", params, locale);
+				 String subject =  messageSource.getMessage("mail.template.subject", null, locale);
+				 MailAgent.sendMail(appConfig.getMailFrom(), user.getEmail(), appConfig.getMaiSmtpHost(),  subject, "", template_newCabinet);
+				
+				 String[] admin_params = { user.getSurname() + "  " + user.getFirstname() + " " + user.getLastname(), user.getEmail() };
+				 String template_admin_newCabinet = messageSource.getMessage("mail.template.newCabinet", admin_params, locale);
+				 MailAgent.sendMail(appConfig.getMailFrom(), ADMIN_EMAIL, appConfig.getMaiSmtpHost(),  subject, "", template_admin_newCabinet);
+
 				 } catch (MessagingException e) {
 					//e.printStackTrace();
 					logger.error("Email to :" + user.getEmail() +" has not been sent!" );

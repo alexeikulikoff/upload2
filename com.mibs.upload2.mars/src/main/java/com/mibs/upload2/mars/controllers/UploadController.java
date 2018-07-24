@@ -15,6 +15,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 
@@ -41,9 +43,9 @@ public class UploadController extends AbstractController{
 		return "test OK";
 	 }
 	 
-	 @RequestMapping("/mailtest")
-	 public  String mailtest( Model model ) {
-		 String emailto = "kulikov@ldc.ru";
+	 @RequestMapping(value= {"/mailtest"} ,method = {RequestMethod.GET})
+	 public  String mailtest( @RequestParam(value="mailto", required = true)  String mailto ) {
+		 String emailto = mailto;
 		 Users user = usersRepository.findByEmail( emailto );
 		 if (user == null) return "No user found for email: " + emailto ;
 		 try {
@@ -54,11 +56,9 @@ public class UploadController extends AbstractController{
 			 MailAgent.sendMail(appConfig.getMailFrom(), emailto, appConfig.getMaiSmtpHost(),  subject, "", template_newCabinet);
 			
 			 String[] admin_params = { user.getSurname() + "  " + user.getFirstname() + " " + user.getLastname(), user.getEmail() };
-			 String template_admin_newCabinet = messageSource.getMessage("mail.template.newCabinet", admin_params, locale);
+			 String template_admin_newCabinet = messageSource.getMessage("mail.template.admin.newCabinet", admin_params, locale);
 			 MailAgent.sendMail(appConfig.getMailFrom(), emailto, appConfig.getMaiSmtpHost(),  subject, "", template_admin_newCabinet);
 	
-			 
-			 MailAgent.sendMail(appConfig.getMailFrom(), "kulikov@ldc.ru", appConfig.getMaiSmtpHost(),  "hello from ppc", "text", "template");
 			 } catch (MessagingException e) {
 				e.printStackTrace();
 				logger.error("Email to :" + emailto +" has not been sent!" );
@@ -205,9 +205,9 @@ public class UploadController extends AbstractController{
 				 MailAgent.sendMail(appConfig.getMailFrom(), user.getEmail(), appConfig.getMaiSmtpHost(),  subject, "", template_newCabinet);
 				
 				 String[] admin_params = { user.getSurname() + "  " + user.getFirstname() + " " + user.getLastname(), user.getEmail() };
-				 String template_admin_newCabinet = messageSource.getMessage("mail.template.newCabinet", admin_params, locale);
+				 String template_admin_newCabinet = messageSource.getMessage("mail.template.admin.newCabinet", admin_params, locale);
 				 MailAgent.sendMail(appConfig.getMailFrom(), ADMIN_EMAIL, appConfig.getMaiSmtpHost(),  subject, "", template_admin_newCabinet);
-
+		
 				 } catch (MessagingException e) {
 					//e.printStackTrace();
 					logger.error("Email to :" + user.getEmail() +" has not been sent!" );

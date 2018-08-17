@@ -176,7 +176,7 @@ public class UploadController extends AbstractController{
 		user.setEmail( cabinet.getEmail() );
 		user.setLogin( cabinet.getEmail());
 		user.setPasswd( Password() );
-		user.setIsEmailChecked(0);
+		user.setMailed(0L);
 		user.setRegdate(regDate());
 		user.setRoles("PATIENT"); 
 			

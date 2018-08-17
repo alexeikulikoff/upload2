@@ -46,7 +46,7 @@ public class Users  implements Serializable{
 	@Column(name = "sex")
 	private String sex; 
 	@Column(name = "ismailchecked")
-	private int isEmailChecked;
+	private Long mailed;
 	@Column(name = "surname")
 	private String surname; 
 	@Column(name = "firstname")
@@ -69,7 +69,7 @@ public class Users  implements Serializable{
 		email = u.email;
 		photo= u.photo;
 		sex = u.sex;
-		isEmailChecked = u.isEmailChecked;
+		mailed = u.mailed;
 		firstname = u.firstname;
 		lastname = u.lastname;
 		surname = u.surname;
@@ -133,11 +133,11 @@ public class Users  implements Serializable{
 	public void setSex(String e) {
 		sex = e;
 	}
-	public int getIsEmailChecked() {
-		return isEmailChecked;
+	public Long getMailed() {
+		return mailed;
 	}
-	public void setIsEmailChecked(int e) {
-		isEmailChecked = e;
+	public void setMailed(Long e) {
+		mailed = e;
 	}
 	public String getSurname() {
 		return this.surname;

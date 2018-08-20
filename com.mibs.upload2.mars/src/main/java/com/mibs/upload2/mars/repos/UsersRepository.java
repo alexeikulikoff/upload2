@@ -22,13 +22,13 @@ public interface UsersRepository extends CrudRepository<Users, Long>{
 	Users findById(Long id);
 	Users findByIdAndRoles(Long id, String role);
 	@Modifying 
-	@Query("UPDATE Users p SET p.email = :email, p.isEmailChecked = :v  WHERE p.id = :id")
-	void updateEmail(@Param("email") String email,  @Param("v") int v, @Param("id") Long id);
+	@Query("UPDATE Users p SET p.email = :email, p.mailed = :v  WHERE p.id = :id")
+	void updateEmail(@Param("email") String email,  @Param("v") Long v, @Param("id") Long id);
 	@Modifying 
-	@Query("UPDATE Users p SET p.isEmailChecked = :v  WHERE p.id = :id")
-	void confirmEmail(@Param("v") Integer v, @Param("id") Long id);
+	@Query("UPDATE Users p SET p.mailed = :v  WHERE p.id = :id")
+	void confirmEmail(@Param("v") Long v, @Param("id") Long id);
 	@Modifying 
-	@Query("UPDATE Users p SET p.isEmailChecked = 0  WHERE p.id = :id")
+	@Query("UPDATE Users p SET p.mailed = 0  WHERE p.id = :id")
 	void unConfirmEmail(@Param("id") Long id);
 	@Modifying 
 	@Query("UPDATE Users p SET p.photo = :image  WHERE p.id = :id")

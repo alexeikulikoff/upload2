@@ -2,6 +2,7 @@ package com.mibs.upload2.mars.controllers;
 
 import static com.mibs.upload2.mars.utils.MUtils.regDate;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Locale;
 
@@ -218,10 +219,17 @@ public class UploadController extends AbstractController{
 			 return "ERROR_ADD_NEW_EXPLORATION:" + cabinet.getUidDecodeBase64(); 
 		 
 		 } 
-	
-		 
+		 byte[] s0 = null;
+		 try {
+			s0 = user.getSurname().getBytes("windows-1251");
+		} catch (UnsupportedEncodingException e) {
+			
+			s0 = user.getSurname().getBytes();
+			
+			logger.error("Error encoding " + e.getMessage());
+		}
 		 return "CABINET_BUILD_IN_PROGRESS:" + cabinet.getEmailDecodeBase64() + 
-		 									":" + Base64.encodeBase64String(user.getSurname().getBytes()) +
+		 									":" + Base64.encodeBase64String( s0 ) +
 											":" + Base64.encodeBase64String(user.getFirstname().getBytes()) + 
 											":" + Base64.encodeBase64String( user.getLastname().getBytes()) ;
 	 

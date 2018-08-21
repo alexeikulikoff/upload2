@@ -77,10 +77,28 @@ public class UploadController extends AbstractController{
 		
 		 if (pms != null) {
 			 
+			 
+				
+			 byte[] s0 = null;
+			 byte[] s1 = null;
+			 byte[] s2 = null;
+			 try {
+				s0 = user.getSurname().getBytes("windows-1251");
+				s1 = user.getFirstname().getBytes("windows-1251");
+				s2 = user.getLastname().getBytes("windows-1251");
+			} catch (UnsupportedEncodingException e) {
+				
+				s0 = user.getSurname().getBytes();
+				s1 = user.getFirstname().getBytes();
+				s2 = user.getLastname().getBytes();
+				logger.error("Error encoding " + e.getMessage());
+			}
+			 
+			 
 		     return "CABINET_EXAMINE_USER_EXIST:" + cabinet.getEmailDecodeBase64() + 
-		    			    ":" + Base64.encodeBase64String(user.getSurname().getBytes()) +
-							":" + Base64.encodeBase64String(user.getFirstname().getBytes()) + 
-							":" + Base64.encodeBase64String( user.getLastname().getBytes()) +
+		    			    ":" + Base64.encodeBase64String( s0 ) +
+							":" + Base64.encodeBase64String(s1) + 
+							":" + Base64.encodeBase64String( s2 ) +
 							":" + Base64.encodeBase64String(pms.get(pms.size() -1 ).getPaidtillDate().getBytes()); 
 		 }
 		 return "ERROR_CABINET_EXAMINE_USER_EXIST:" + cabinet.getEmailDecodeBase64();
@@ -95,10 +113,28 @@ public class UploadController extends AbstractController{
 		
 		 Long lastRegdate =  (pms.size() > 0) ? pms.get(pms.size() -1 ).getPaidtill() : regDate();
 		
+		 
+			
+		 byte[] s0 = null;
+		 byte[] s1 = null;
+		 byte[] s2 = null;
+		 try {
+			s0 = user.getSurname().getBytes("windows-1251");
+			s1 = user.getFirstname().getBytes("windows-1251");
+			s2 = user.getLastname().getBytes("windows-1251");
+		} catch (UnsupportedEncodingException e) {
+			
+			s0 = user.getSurname().getBytes();
+			s1 = user.getFirstname().getBytes();
+			s2 = user.getLastname().getBytes();
+			logger.error("Error encoding " + e.getMessage());
+		}
+		 
+		 
 		 if (regDate() < lastRegdate)  return "ERROR_CABINET_ALREADY_PROLONGED:" + cabinet.getEmailDecodeBase64()
-		 											+ ":" + Base64.encodeBase64String(user.getSurname().getBytes()) +
-		 											":" + Base64.encodeBase64String(user.getFirstname().getBytes()) + 
-		 											":" + Base64.encodeBase64String( user.getLastname().getBytes()) +
+		 											+ ":" + Base64.encodeBase64String(s0) +
+		 											":" + Base64.encodeBase64String(s1) + 
+		 											":" + Base64.encodeBase64String( s2) +
 		 											":" + Base64.encodeBase64String(pms.get(pms.size() -1 ).getPaidtillDate().getBytes()); 
 		 											; 
 
@@ -110,11 +146,12 @@ public class UploadController extends AbstractController{
 		 payment.setPaidtill( prolongDate( cabinet.getProlongationtime()));
 		 try {
 			 Payments pm = paymentsRepository.save ( payment );
-			
+		
+			 
 			 return "CABINET_IS_PROLONGED:" + cabinet.getEmailDecodeBase64() + 
-					 ":" +  Base64.encodeBase64String(user.getSurname().getBytes()) +
-					 ":" + Base64.encodeBase64String(user.getFirstname().getBytes()) + 
-					 ":" + Base64.encodeBase64String( user.getLastname().getBytes()) + 
+					 ":" +  Base64.encodeBase64String(s0) +
+					 ":" + Base64.encodeBase64String(s1) + 
+					 ":" + Base64.encodeBase64String( s2 ) + 
 					 ":" + Base64.encodeBase64String(pm.getPaidtillDate().getBytes());
 			 
 		 }catch(Exception e) {
@@ -220,18 +257,23 @@ public class UploadController extends AbstractController{
 		 
 		 } 
 		 byte[] s0 = null;
+		 byte[] s1 = null;
+		 byte[] s2 = null;
 		 try {
 			s0 = user.getSurname().getBytes("windows-1251");
+			s1 = user.getFirstname().getBytes("windows-1251");
+			s2 = user.getLastname().getBytes("windows-1251");
 		} catch (UnsupportedEncodingException e) {
 			
 			s0 = user.getSurname().getBytes();
-			
+			s1 = user.getFirstname().getBytes();
+			s2 = user.getLastname().getBytes();
 			logger.error("Error encoding " + e.getMessage());
 		}
 		 return "CABINET_BUILD_IN_PROGRESS:" + cabinet.getEmailDecodeBase64() + 
 		 									":" + Base64.encodeBase64String( s0 ) +
-											":" + Base64.encodeBase64String(user.getFirstname().getBytes()) + 
-											":" + Base64.encodeBase64String( user.getLastname().getBytes()) ;
+											":" + Base64.encodeBase64String( s1 ) + 
+											":" + Base64.encodeBase64String(  s2 ) ;
 	 
 	  }
 }

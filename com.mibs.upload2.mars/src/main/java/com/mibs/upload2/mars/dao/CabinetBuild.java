@@ -1,5 +1,6 @@
 package com.mibs.upload2.mars.dao;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,15 +29,27 @@ public class CabinetBuild extends CabinetProlong {
 	public String getFirstDecodeBase64() {
 		return first;
 	}
-	public String getFirst() {
-		return new String(Base64.decodeBase64(first));
+	public String getFirst(){
+		try {
+			return new String(Base64.decodeBase64(first),"windows-1251");
+			
+		} catch (UnsupportedEncodingException e) {
+			
+			return new String(Base64.decodeBase64(first));
+		}
+		
 	}
 	public void setFirst(String s) {
 		first = s;
 	}
 
 	public String getParent() {
-		return new String(Base64.decodeBase64(parent));
+		try {
+			return new String(Base64.decodeBase64(parent),"windows-1251");
+		} catch (UnsupportedEncodingException e) {
+
+			return new String(Base64.decodeBase64(parent));
+		}
 	}
 	public String getParentDecodeBase64() {
 		return parent;
@@ -48,7 +61,11 @@ public class CabinetBuild extends CabinetProlong {
 		return family;
 	}
 	public String getFamily() {
-		return new String(Base64.decodeBase64(family));
+		try {
+			return new String(Base64.decodeBase64(family),"windows-1251");
+		} catch (UnsupportedEncodingException e) {
+			return new String(Base64.decodeBase64(family));
+		}
 	}
 	public void setFamily(String s) {
 		family = s;
@@ -67,7 +84,10 @@ public class CabinetBuild extends CabinetProlong {
 		return studyname;
 	}
 	public String getStudyname() {
-		return new String(Base64.decodeBase64(studyname));
+		try {
+			return new String(Base64.decodeBase64(studyname),"windows-1251");
+		} catch (UnsupportedEncodingException e) {
+			return new String(Base64.decodeBase64(studyname));		}
 	}
 	public void setStudyname(String s) {
 		studyname = s;

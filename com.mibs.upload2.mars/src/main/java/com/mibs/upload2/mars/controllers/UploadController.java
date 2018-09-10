@@ -82,17 +82,23 @@ public class UploadController extends AbstractController{
 			 byte[] s0 = null;
 			 byte[] s1 = null;
 			 byte[] s2 = null;
-			 try {
-				s0 = user.getSurname().getBytes("windows-1251");
-				s1 = user.getFirstname().getBytes("windows-1251");
-				s2 = user.getLastname().getBytes("windows-1251");
-			} catch (UnsupportedEncodingException e) {
+			// try {
+				//s0 = user.getSurname().getBytes("windows-1251");
+				//s1 = user.getFirstname().getBytes("windows-1251");
+				//s2 = user.getLastname().getBytes("windows-1251");
 				
 				s0 = user.getSurname().getBytes();
 				s1 = user.getFirstname().getBytes();
 				s2 = user.getLastname().getBytes();
-				logger.error("Error encoding " + e.getMessage());
-			}
+				
+				
+			//} catch (UnsupportedEncodingException e) {
+				
+				// s0 = user.getSurname().getBytes();
+				// s1 = user.getFirstname().getBytes();
+				// s2 = user.getLastname().getBytes();
+				//logger.error("Error encoding " + e.getMessage());
+			//}
 			 
 			 
 		     return "CABINET_EXAMINE_USER_EXIST:" + cabinet.getEmailDecodeBase64() + 
@@ -118,17 +124,17 @@ public class UploadController extends AbstractController{
 		 byte[] s0 = null;
 		 byte[] s1 = null;
 		 byte[] s2 = null;
-		 try {
-			s0 = user.getSurname().getBytes("windows-1251");
-			s1 = user.getFirstname().getBytes("windows-1251");
-			s2 = user.getLastname().getBytes("windows-1251");
-		} catch (UnsupportedEncodingException e) {
+		// try {
+			//s0 = user.getSurname().getBytes("windows-1251");
+			//s1 = user.getFirstname().getBytes("windows-1251");
+			//s2 = user.getLastname().getBytes("windows-1251");
+		//} catch (UnsupportedEncodingException e) {
 			
 			s0 = user.getSurname().getBytes();
 			s1 = user.getFirstname().getBytes();
 			s2 = user.getLastname().getBytes();
-			logger.error("Error encoding " + e.getMessage());
-		}
+		//	logger.error("Error encoding " + e.getMessage());
+		//}
 		 
 		 
 		 if (regDate() < lastRegdate)  return "ERROR_CABINET_ALREADY_PROLONGED:" + cabinet.getEmailDecodeBase64()
@@ -259,17 +265,17 @@ public class UploadController extends AbstractController{
 		 byte[] s0 = null;
 		 byte[] s1 = null;
 		 byte[] s2 = null;
-		 try {
-			s0 = user.getSurname().getBytes("windows-1251");
-			s1 = user.getFirstname().getBytes("windows-1251");
-			s2 = user.getLastname().getBytes("windows-1251");
-		} catch (UnsupportedEncodingException e) {
+		// try {
+		//	s0 = user.getSurname().getBytes("windows-1251");
+		//	s1 = user.getFirstname().getBytes("windows-1251");
+		//	s2 = user.getLastname().getBytes("windows-1251");
+		//} catch (UnsupportedEncodingException e) {
 			
 			s0 = user.getSurname().getBytes();
 			s1 = user.getFirstname().getBytes();
 			s2 = user.getLastname().getBytes();
-			logger.error("Error encoding " + e.getMessage());
-		}
+			//logger.error("Error encoding " + e.getMessage());
+		//}
 		 return "CABINET_BUILD_IN_PROGRESS:" + cabinet.getEmailDecodeBase64() + 
 		 									":" + Base64.encodeBase64String( s0 ) +
 											":" + Base64.encodeBase64String( s1 ) + 

@@ -30,13 +30,13 @@ public class CabinetBuild extends CabinetProlong {
 		return first;
 	}
 	public String getFirst(){
-		try {
-			return new String(Base64.decodeBase64(first),"windows-1251");
+		//try {
+		//	return new String(Base64.decodeBase64(first),"windows-1251");
 			
-		} catch (UnsupportedEncodingException e) {
+		//} catch (UnsupportedEncodingException e) {
 			
 			return new String(Base64.decodeBase64(first));
-		}
+		//}
 		
 	}
 	public void setFirst(String s) {
@@ -44,12 +44,12 @@ public class CabinetBuild extends CabinetProlong {
 	}
 
 	public String getParent() {
-		try {
-			return new String(Base64.decodeBase64(parent),"windows-1251");
-		} catch (UnsupportedEncodingException e) {
+		//try {
+		//	return new String(Base64.decodeBase64(parent),"windows-1251");
+		//} catch (UnsupportedEncodingException e) {
 
 			return new String(Base64.decodeBase64(parent));
-		}
+		//}
 	}
 	public String getParentDecodeBase64() {
 		return parent;
@@ -61,11 +61,11 @@ public class CabinetBuild extends CabinetProlong {
 		return family;
 	}
 	public String getFamily() {
-		try {
-			return new String(Base64.decodeBase64(family),"windows-1251");
-		} catch (UnsupportedEncodingException e) {
+		//try {
+		//	return new String(Base64.decodeBase64(family),"windows-1251");
+		//} catch (UnsupportedEncodingException e) {
 			return new String(Base64.decodeBase64(family));
-		}
+		//}
 	}
 	public void setFamily(String s) {
 		family = s;
@@ -84,10 +84,11 @@ public class CabinetBuild extends CabinetProlong {
 		return studyname;
 	}
 	public String getStudyname() {
-		try {
-			return new String(Base64.decodeBase64(studyname),"windows-1251");
-		} catch (UnsupportedEncodingException e) {
-			return new String(Base64.decodeBase64(studyname));		}
+		//try {
+		//	return new String(Base64.decodeBase64(studyname),"windows-1251");
+		//} catch (UnsupportedEncodingException e) {
+			return new String(Base64.decodeBase64(studyname));		
+		//}
 	}
 	public void setStudyname(String s) {
 		studyname = s;

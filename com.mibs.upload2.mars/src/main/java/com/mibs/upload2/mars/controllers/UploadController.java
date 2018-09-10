@@ -199,6 +199,7 @@ public class UploadController extends AbstractController{
 	 
 	 @RequestMapping("/cabinetBuild")
 	 public String cabinetBuild( @RequestBody CabinetBuild cabinet ) {
+		 System.out.println(cabinet);
 		 Users user = usersRepository.findByEmail(cabinet.getEmail());
 		 if (user != null) {
 			 List<Payments> pms = paymentsRepository.findByUserid( user.getId() );

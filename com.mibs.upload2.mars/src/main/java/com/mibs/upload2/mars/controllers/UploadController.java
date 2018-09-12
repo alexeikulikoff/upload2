@@ -77,7 +77,7 @@ public class UploadController extends AbstractController{
 		
 		 if (pms != null) {
 			 byte[] s0,s1,s2; s0 = s1 = s2 = null;
-			 if (cabinet.getEncode().equals("Cp1251")) {
+			 if (cabinet.getEncode().equals("cp1251")) {
 				 try {
 					s0 = user.getSurname().getBytes("windows-1251");
 					s1 = user.getFirstname().getBytes("windows-1251");
@@ -86,7 +86,7 @@ public class UploadController extends AbstractController{
 					s0 = s1 = s2 = "Encode error".getBytes();
 					logger.error("Error encoding " + e.getMessage());
 				}
-			 }else if (cabinet.getEncode().equals("UTF-8")) {
+			 }else if (cabinet.getEncode().equals("utf-8")) {
 				s0 = user.getSurname().getBytes();
 				s1 = user.getFirstname().getBytes();
 				s2 = user.getLastname().getBytes();
@@ -114,7 +114,7 @@ public class UploadController extends AbstractController{
 		
 		 byte[] s0,s1,s2;  s0 = s1 = s2 = null;
 		 
-		 if (cabinet.getEncode().equals("Cp1251")) {
+		 if (cabinet.getEncode().equals("cp1251")) {
 			 try {
 				s0 = user.getSurname().getBytes("windows-1251");
 				s1 = user.getFirstname().getBytes("windows-1251");
@@ -123,7 +123,7 @@ public class UploadController extends AbstractController{
 				s0 = s1 = s2 = "Encode error".getBytes();
 				logger.error("Error encoding " + e.getMessage());
 			}
-		 }else if (cabinet.getEncode().equals("UTF-8")) {
+		 }else if (cabinet.getEncode().equals("utf-8")) {
 			s0 = user.getSurname().getBytes();
 			s1 = user.getFirstname().getBytes();
 			s2 = user.getLastname().getBytes();
@@ -262,7 +262,7 @@ public class UploadController extends AbstractController{
 		 } 
 		 byte[] s0,s1,s2;  s0 = s1 = s2 = null;
 		 
-		 if (cabinet.getEncode().equals("Cp1251")) {
+		 if (cabinet.getEncode().equals("cp1251")) {
 		    try {
 				s0 = user.getSurname().getBytes("windows-1251");
 				s1 = user.getFirstname().getBytes("windows-1251");
@@ -272,7 +272,7 @@ public class UploadController extends AbstractController{
 				logger.error("Error encoding " + e.getMessage());
 		    }
 		}
-		else if (cabinet.getEncode().equals("UTF-8")) {
+		else if (cabinet.getEncode().equals("utf-8")) {
 			s0 = user.getSurname().getBytes();
 			s1 = user.getFirstname().getBytes();
 			s2 = user.getLastname().getBytes();

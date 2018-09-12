@@ -5,14 +5,19 @@
  */
 package com.mibs.upload2.mars.dao;
 
+import java.io.UnsupportedEncodingException;
+
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author alex
  */
 public class CabinetAddExploration  extends CabinetExamine {
+	static Logger logger = LoggerFactory.getLogger(CabinetBuild.class);
     private String path;
     private String exploration;
     private String uid;
@@ -36,7 +41,13 @@ public class CabinetAddExploration  extends CabinetExamine {
     	return exploration;
     }
     public String getExploration(){
-    	return new String(Base64.decodeBase64(exploration));
+    	try {
+			return encode.equals("cp1251") ? new String(Base64.decodeBase64(exploration),"windows-1251") 
+				 : encode.equals("utf-8")  ? new String(Base64.decodeBase64(exploration)) : "Unknown charset" ;
+	   } catch (UnsupportedEncodingException e1) {
+			logger.error("Error while encoding value" + exploration);
+			return "Encode error";
+		}
     }
     public String getPath(){
     	return new String(Base64.decodeBase64(path));

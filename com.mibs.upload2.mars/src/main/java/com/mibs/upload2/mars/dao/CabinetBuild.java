@@ -32,8 +32,8 @@ public class CabinetBuild extends CabinetProlong {
 	}
 	public String getFirst(){
 	  try {
-			return encode.equals("Cp1251") ? new String(Base64.decodeBase64(first),"windows-1251") 
-				 : encode.equals("UTF-8")  ? new String(Base64.decodeBase64(first)) : "Unknown charset" ;
+			return encode.equals("cp1251") ? new String(Base64.decodeBase64(first),"windows-1251") 
+				 : encode.equals("utf-8")  ? new String(Base64.decodeBase64(first)) : "Unknown charset" ;
 	   } catch (UnsupportedEncodingException e1) {
 			logger.error("Error while encoding value" + first);
 			return "Encode error";
@@ -45,8 +45,8 @@ public class CabinetBuild extends CabinetProlong {
 
 	public String getParent() {
 		 try {
-				return encode.equals("Cp1251") ? new String(Base64.decodeBase64(parent),"windows-1251") 
-					 : encode.equals("UTF-8")  ? new String(Base64.decodeBase64(parent)) : "Unknown charset" ;
+				return encode.equals("cp1251") ? new String(Base64.decodeBase64(parent),"windows-1251") 
+					 : encode.equals("utf-8")  ? new String(Base64.decodeBase64(parent)) : "Unknown charset" ;
 		   } catch (UnsupportedEncodingException e1) {
 				logger.error("Error while encoding value" + parent);
 				return "Encode error";
@@ -63,8 +63,8 @@ public class CabinetBuild extends CabinetProlong {
 	}
 	public String getFamily() {
 		try {
-			return encode.equals("Cp1251") ? new String(Base64.decodeBase64(family),"windows-1251") 
-					 : encode.equals("UTF-8")  ? new String(Base64.decodeBase64(family)) : "Unknown charset" ;
+			return encode.equals("cp1251") ? new String(Base64.decodeBase64(family),"windows-1251") 
+					 : encode.equals("utf-8")  ? new String(Base64.decodeBase64(family)) : "Unknown charset" ;
 		} catch (UnsupportedEncodingException e1) {
 				logger.error("Error while encoding value" + family);
 				return "Encode error";
@@ -88,8 +88,8 @@ public class CabinetBuild extends CabinetProlong {
 	}
 	public String getStudyname() {
 		try {
-			return encode.equals("Cp1251") ? new String(Base64.decodeBase64(studyname),"windows-1251") 
-					 : encode.equals("UTF-8")  ? new String(Base64.decodeBase64(studyname)) : "Unknown charset" ;
+			return encode.equals("cp1251") ? new String(Base64.decodeBase64(studyname),"windows-1251") 
+					 : encode.equals("utf-8")  ? new String(Base64.decodeBase64(studyname)) : "Unknown charset" ;
 		} catch (UnsupportedEncodingException e1) {
 				logger.error("Error while encoding value" + studyname);
 				return "Encode error";

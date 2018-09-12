@@ -76,32 +76,25 @@ public class UploadController extends AbstractController{
 		 List<Payments> pms = paymentsRepository.findByUserid( user.getId() );
 		
 		 if (pms != null) {
-			 
-			 
-				
-			 byte[] s0 = null;
-			 byte[] s1 = null;
-			 byte[] s2 = null;
-			// try {
-				//s0 = user.getSurname().getBytes("windows-1251");
-				//s1 = user.getFirstname().getBytes("windows-1251");
-				//s2 = user.getLastname().getBytes("windows-1251");
-				
+			 byte[] s0,s1,s2; s0 = s1 = s2 = null;
+			 if (cabinet.getEncode().equals("Cp1251")) {
+				 try {
+					s0 = user.getSurname().getBytes("windows-1251");
+					s1 = user.getFirstname().getBytes("windows-1251");
+					s2 = user.getLastname().getBytes("windows-1251");
+				} catch (UnsupportedEncodingException e) {
+					s0 = s1 = s2 = "Encode error".getBytes();
+					logger.error("Error encoding " + e.getMessage());
+				}
+			 }else if (cabinet.getEncode().equals("UTF-8")) {
 				s0 = user.getSurname().getBytes();
 				s1 = user.getFirstname().getBytes();
 				s2 = user.getLastname().getBytes();
-				
-				
-			//} catch (UnsupportedEncodingException e) {
-				
-				// s0 = user.getSurname().getBytes();
-				// s1 = user.getFirstname().getBytes();
-				// s2 = user.getLastname().getBytes();
-				//logger.error("Error encoding " + e.getMessage());
-			//}
-			 
-			 
-		     return "CABINET_EXAMINE_USER_EXIST:" + cabinet.getEmailDecodeBase64() + 
+			}else {
+				s0 = s1 = s2 = "Unknown charset".getBytes();
+				logger.error("Unknown charset");
+			}
+	     return "CABINET_EXAMINE_USER_EXIST:" + cabinet.getEmailDecodeBase64() + 
 		    			    ":" + Base64.encodeBase64String( s0 ) +
 							":" + Base64.encodeBase64String(s1) + 
 							":" + Base64.encodeBase64String( s2 ) +
@@ -119,25 +112,27 @@ public class UploadController extends AbstractController{
 		
 		 Long lastRegdate =  (pms.size() > 0) ? pms.get(pms.size() -1 ).getPaidtill() : regDate();
 		
+		 byte[] s0,s1,s2;  s0 = s1 = s2 = null;
 		 
-			
-		 byte[] s0 = null;
-		 byte[] s1 = null;
-		 byte[] s2 = null;
-		// try {
-			//s0 = user.getSurname().getBytes("windows-1251");
-			//s1 = user.getFirstname().getBytes("windows-1251");
-			//s2 = user.getLastname().getBytes("windows-1251");
-		//} catch (UnsupportedEncodingException e) {
-			
+		 if (cabinet.getEncode().equals("Cp1251")) {
+			 try {
+				s0 = user.getSurname().getBytes("windows-1251");
+				s1 = user.getFirstname().getBytes("windows-1251");
+				s2 = user.getLastname().getBytes("windows-1251");
+			} catch (UnsupportedEncodingException e) {
+				s0 = s1 = s2 = "Encode error".getBytes();
+				logger.error("Error encoding " + e.getMessage());
+			}
+		 }else if (cabinet.getEncode().equals("UTF-8")) {
 			s0 = user.getSurname().getBytes();
 			s1 = user.getFirstname().getBytes();
 			s2 = user.getLastname().getBytes();
-		//	logger.error("Error encoding " + e.getMessage());
-		//}
+		}else {
+			s0 = s1 = s2 = "Unknown charset".getBytes();
+			logger.error("Unknown charset");
+		}
 		 
-		 
-		 if (regDate() < lastRegdate)  return "ERROR_CABINET_ALREADY_PROLONGED:" + cabinet.getEmailDecodeBase64()
+		if (regDate() < lastRegdate)  return "ERROR_CABINET_ALREADY_PROLONGED:" + cabinet.getEmailDecodeBase64()
 		 											+ ":" + Base64.encodeBase64String(s0) +
 		 											":" + Base64.encodeBase64String(s1) + 
 		 											":" + Base64.encodeBase64String( s2) +
@@ -200,7 +195,7 @@ public class UploadController extends AbstractController{
 	 @RequestMapping("/cabinetBuild")
 	 public String cabinetBuild( @RequestBody CabinetBuild cabinet ) {
 		
-		 logger.info("Cabinet :" + cabinet );
+		 logger.info("Cabinet :" + cabinet.getFirst() + "  " + cabinet.getParent() + "  " + cabinet.getEncode() );
 		 Users user = usersRepository.findByEmail(cabinet.getEmail());
 		 if (user != null) {
 			 List<Payments> pms = paymentsRepository.findByUserid( user.getId() );
@@ -216,6 +211,7 @@ public class UploadController extends AbstractController{
 		 	}
 		 }	 
 		user = new Users();
+		
 		user.setFirstname(cabinet.getFirst());
 		user.setLastname( cabinet.getParent());
 		user.setSurname( cabinet.getFamily());
@@ -248,13 +244,13 @@ public class UploadController extends AbstractController{
 				 String[] params = { user.getSurname() + "  " + user.getFirstname() + " " + user.getLastname(), user.getEmail(), user.getPasswd() };
 				 String template_newCabinet = messageSource.getMessage("mail.template.newCabinet", params, locale);
 				 String subject =  messageSource.getMessage("mail.template.subject", null, locale);
-				 MailAgent.sendMail(appConfig.getMailFrom(), user.getEmail(), appConfig.getMaiSmtpHost(),  subject, "", template_newCabinet);
+				// MailAgent.sendMail(appConfig.getMailFrom(), user.getEmail(), appConfig.getMaiSmtpHost(),  subject, "", template_newCabinet);
 				
 				 String[] admin_params = { user.getSurname() + "  " + user.getFirstname() + " " + user.getLastname(), user.getEmail() };
 				 String template_admin_newCabinet = messageSource.getMessage("mail.template.admin.newCabinet", admin_params, locale);
-				 MailAgent.sendMail(appConfig.getMailFrom(), ADMIN_EMAIL, appConfig.getMaiSmtpHost(),  subject, "", template_admin_newCabinet);
+				// MailAgent.sendMail(appConfig.getMailFrom(), ADMIN_EMAIL, appConfig.getMaiSmtpHost(),  subject, "", template_admin_newCabinet);
 		
-				 } catch (MessagingException e) {
+				 } catch (Exception e) {
 					//e.printStackTrace();
 					logger.error("Email to :" + user.getEmail() +" has not been sent!" );
 			}
@@ -264,25 +260,31 @@ public class UploadController extends AbstractController{
 			 return "ERROR_ADD_NEW_EXPLORATION:" + cabinet.getUidDecodeBase64(); 
 		 
 		 } 
-		 byte[] s0 = null;
-		 byte[] s1 = null;
-		 byte[] s2 = null;
-		// try {
-		//	s0 = user.getSurname().getBytes("windows-1251");
-		//	s1 = user.getFirstname().getBytes("windows-1251");
-		//	s2 = user.getLastname().getBytes("windows-1251");
-		//} catch (UnsupportedEncodingException e) {
-			
+		 byte[] s0,s1,s2;  s0 = s1 = s2 = null;
+		 
+		 if (cabinet.getEncode().equals("Cp1251")) {
+		    try {
+				s0 = user.getSurname().getBytes("windows-1251");
+				s1 = user.getFirstname().getBytes("windows-1251");
+				s2 = user.getLastname().getBytes("windows-1251");
+		    } catch (UnsupportedEncodingException e) {
+				s0 = s1 = s2 = "Encode error".getBytes();
+				logger.error("Error encoding " + e.getMessage());
+		    }
+		}
+		else if (cabinet.getEncode().equals("UTF-8")) {
 			s0 = user.getSurname().getBytes();
 			s1 = user.getFirstname().getBytes();
 			s2 = user.getLastname().getBytes();
-			//logger.error("Error encoding " + e.getMessage());
-		//}
+		}
+		else {
+			s0 = s1 = s2 = "Unknown charset".getBytes();
+			logger.error("Unknown charset");
+		}
 		 return "CABINET_BUILD_IN_PROGRESS:" + cabinet.getEmailDecodeBase64() + 
 		 									":" + Base64.encodeBase64String( s0 ) +
 											":" + Base64.encodeBase64String( s1 ) + 
-											":" + Base64.encodeBase64String(  s2 ) ;
-	 
+											":" + Base64.encodeBase64String( s2 ) ;
 	  }
 }
 

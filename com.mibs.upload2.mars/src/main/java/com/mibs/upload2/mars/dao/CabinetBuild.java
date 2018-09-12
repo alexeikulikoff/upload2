@@ -6,16 +6,19 @@ import java.util.List;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CabinetBuild extends CabinetProlong {
+	
+	static Logger logger = LoggerFactory.getLogger(CabinetBuild.class);
 	private String first;
 	private String parent;
 	private String family;
-	
 	private String uid;
 	private String studyname;
 	private String path;
-
+	
 	private List<Conclusion> conclusions;
 
 	public List<Conclusion> getConclusions(){
@@ -24,32 +27,30 @@ public class CabinetBuild extends CabinetProlong {
 	public void setConclusions(List<Conclusion> conclusions) {
 		this.conclusions  = conclusions;
 	}
-	
-	
 	public String getFirstDecodeBase64() {
 		return first;
 	}
 	public String getFirst(){
-		//try {
-		//	return new String(Base64.decodeBase64(first),"windows-1251");
-			
-		//} catch (UnsupportedEncodingException e) {
-			
-			return new String(Base64.decodeBase64(first));
-		//}
-		
+	  try {
+			return encode.equals("Cp1251") ? new String(Base64.decodeBase64(first),"windows-1251") 
+				 : encode.equals("UTF-8")  ? new String(Base64.decodeBase64(first)) : "Unknown charset" ;
+	   } catch (UnsupportedEncodingException e1) {
+			logger.error("Error while encoding value" + first);
+			return "Encode error";
+		}
 	}
 	public void setFirst(String s) {
 		first = s;
 	}
 
 	public String getParent() {
-		//try {
-		//	return new String(Base64.decodeBase64(parent),"windows-1251");
-		//} catch (UnsupportedEncodingException e) {
-
-			return new String(Base64.decodeBase64(parent));
-		//}
+		 try {
+				return encode.equals("Cp1251") ? new String(Base64.decodeBase64(parent),"windows-1251") 
+					 : encode.equals("UTF-8")  ? new String(Base64.decodeBase64(parent)) : "Unknown charset" ;
+		   } catch (UnsupportedEncodingException e1) {
+				logger.error("Error while encoding value" + parent);
+				return "Encode error";
+			}
 	}
 	public String getParentDecodeBase64() {
 		return parent;
@@ -61,11 +62,13 @@ public class CabinetBuild extends CabinetProlong {
 		return family;
 	}
 	public String getFamily() {
-		//try {
-		//	return new String(Base64.decodeBase64(family),"windows-1251");
-		//} catch (UnsupportedEncodingException e) {
-			return new String(Base64.decodeBase64(family));
-		//}
+		try {
+			return encode.equals("Cp1251") ? new String(Base64.decodeBase64(family),"windows-1251") 
+					 : encode.equals("UTF-8")  ? new String(Base64.decodeBase64(family)) : "Unknown charset" ;
+		} catch (UnsupportedEncodingException e1) {
+				logger.error("Error while encoding value" + family);
+				return "Encode error";
+		}
 	}
 	public void setFamily(String s) {
 		family = s;
@@ -84,11 +87,14 @@ public class CabinetBuild extends CabinetProlong {
 		return studyname;
 	}
 	public String getStudyname() {
-		//try {
-		//	return new String(Base64.decodeBase64(studyname),"windows-1251");
-		//} catch (UnsupportedEncodingException e) {
-			return new String(Base64.decodeBase64(studyname));		
-		//}
+		try {
+			return encode.equals("Cp1251") ? new String(Base64.decodeBase64(studyname),"windows-1251") 
+					 : encode.equals("UTF-8")  ? new String(Base64.decodeBase64(studyname)) : "Unknown charset" ;
+		} catch (UnsupportedEncodingException e1) {
+				logger.error("Error while encoding value" + studyname);
+				return "Encode error";
+		}
+		
 	}
 	public void setStudyname(String s) {
 		studyname = s;

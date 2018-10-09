@@ -35,7 +35,8 @@ import com.mibs.upload2.mars.entity.Users;
 @RestController
 public class UploadController extends AbstractController{
 
-	private final String ADMIN_EMAIL = "storage@mcomtech.ru";
+	//private final String ADMIN_EMAIL = "storage@mcomtech.ru";
+	private final String ADMIN_EMAIL = "lkppwd@ldc.ru";
 	
 	private Locale locale = Locale.getDefault();
 	

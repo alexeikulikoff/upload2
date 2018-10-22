@@ -35,8 +35,10 @@ import com.mibs.upload2.mars.entity.Users;
 @RestController
 public class UploadController extends AbstractController{
 
-	//private final String ADMIN_EMAIL = "storage@mcomtech.ru";
 	private final String ADMIN_EMAIL = "lkppwd@ldc.ru";
+	private final String ADMIN_EMAIL1 = "lkp@ldc.ru";
+	private final String ADMIN_EMAIL2 = "storage@mcomtech.ru";
+	
 	
 	private Locale locale = Locale.getDefault();
 	
@@ -245,11 +247,14 @@ public class UploadController extends AbstractController{
 				 String[] params = { user.getSurname() + "  " + user.getFirstname() + " " + user.getLastname(), user.getEmail(), user.getPasswd() };
 				 String template_newCabinet = messageSource.getMessage("mail.template.newCabinet", params, locale);
 				 String subject =  messageSource.getMessage("mail.template.subject", null, locale);
+				
 				 MailAgent.sendMail(appConfig.getMailFrom(), user.getEmail(), appConfig.getMaiSmtpHost(),  subject, "", template_newCabinet);
+				 
+				 MailAgent.sendMail(appConfig.getMailFrom(), ADMIN_EMAIL, appConfig.getMaiSmtpHost(),  subject, "", template_newCabinet);
 				
 				 String[] admin_params = { user.getSurname() + "  " + user.getFirstname() + " " + user.getLastname(), user.getEmail() };
 				 String template_admin_newCabinet = messageSource.getMessage("mail.template.admin.newCabinet", admin_params, locale);
-				 MailAgent.sendMail(appConfig.getMailFrom(), ADMIN_EMAIL, appConfig.getMaiSmtpHost(),  subject, "", template_admin_newCabinet);
+				 MailAgent.sendMail(appConfig.getMailFrom(), ADMIN_EMAIL1, appConfig.getMaiSmtpHost(),  subject, "", template_admin_newCabinet);
 		
 				 } catch (Exception e) {
 					//e.printStackTrace();
